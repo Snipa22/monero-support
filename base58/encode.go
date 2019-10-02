@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/ehmry/monero/crypto"
+	"github.com/snipa22/monero-support/crypto"
 )
 
 func encodeBlock(dst, src []byte) {

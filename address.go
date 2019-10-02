@@ -4,20 +4,67 @@ import (
 	"bytes"
 	"errors"
 
-	"github.com/ehmry/monero/base58"
-	"github.com/ehmry/monero/crypto"
+	"github.com/snipa22/monero-support/base58"
+	"github.com/snipa22/monero-support/crypto"
 )
 
 const ChecksumSize = 4
 
-// tacotime> '2' is bytecoin, '4' is monero
-var Tag = byte(0x12)
+var Tag byte
+var Tags []byte
+
+type Coin int
+type Network int
+type AddressType int
+
+const (
+	Monero Coin = 0
+)
+
+const (
+	Testnet  Network = 0
+	Mainnet  Network = 1
+	Stagenet Network = 2
+)
+
+const (
+	Normal     AddressType = 0
+	Integrated AddressType = 1
+	Subaddress AddressType = 2
+)
+
+func SetValidTags(c Coin, n Network) {
+	switch c {
+	case Monero:
+		switch n {
+		case Mainnet:
+			Tags = []byte{byte(0x12), byte(0x13), byte(0x2A)}
+			break
+		case Stagenet:
+			Tags = []byte{byte(0x18), byte(0x19), byte(0x24)}
+			break
+		case Testnet:
+			Tags = []byte{byte(0x35), byte(0x36), byte(0x3F)}
+			break
+		}
+		break
+	}
+}
+
+func SetActiveTag(a AddressType) error {
+	if int(a) < len(Tags) {
+		Tag = Tags[a]
+		return nil
+	}
+	return InvalidTagSelected
+}
 
 var (
 	InvalidAddressLength = errors.New("invalid address length")
 	CorruptAddress       = errors.New("address has invalid checksum")
 	InvalidAddressTag    = errors.New("address has invalid prefix")
 	InvalidAddress       = errors.New("address contains invalid keys")
+	InvalidTagSelected   = errors.New("tag not available")
 )
 
 // DecodeAddress decodes an address from the standard textual representation.

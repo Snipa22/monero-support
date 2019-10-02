@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/ehmry/monero/crypto"
+	"github.com/snipa22/monero-support/crypto"
 )
 
 // Account contains public and private keys for the spend and view

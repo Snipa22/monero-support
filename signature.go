@@ -2,7 +2,7 @@ package monero
 
 /*
 
-import "github.com/ehmry/monero/crypto"
+import "github.com/snipa22/monero-support/crypto"
 
 func VerifySignature(addr *PublicAddress, hash, signature []byte) bool {
 	return crypto.checkSignature(hash, addr.spend, signature)

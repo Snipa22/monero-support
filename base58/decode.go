@@ -7,7 +7,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/ehmry/monero/crypto"
+	"github.com/snipa22/monero-support/crypto"
 )
 
 func decodeBlock(dst, src []byte) (int, error) {
