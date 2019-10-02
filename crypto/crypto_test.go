@@ -193,7 +193,7 @@ func TestDeriveSecretKey(t *testing.T) {
 
 		test, err := deriveSecretKey(derivation, outputIndex, base)
 		if err != nil {
-			t.Errorf("derive_secret_key %d error: %v", err)
+			t.Errorf("derive_secret_key %d error: %v", i, err)
 		}
 
 		if !bytes.Equal(test[:], control) {

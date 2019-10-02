@@ -1,9 +1,11 @@
 package monero
 
-import "testing"
+import (
+	"testing"
+)
 
 const normal = "4AMGENEQLdPGSqhGSgTdzH8dWxWoVwiTfgf2oTjPjxsgbUJS7kkK7euAhm94snzXVhHtZLwAXLiZQ6nDaWmqWHeSTafpXVw"
-const integrated = "4L3wFB3twtuGSqhGSgTdzH8dWxWoVwiTfgf2oTjPjxsgbUJS7kkK7euAhm94snzXVhHtZLwAXLiZQ6nDaWmqWHeSgTmh7tVYUx65eb5iE7"
+const integrated = "4L3wFB3twtuGSqhGSgTdzH8dWxWoVwiTfgf2oTjPjxsgbUJS7kkK7euAhm94snzXVhHtZLwAXLiZQ6nDaWmqWHeSgSv6AYEmdBhKm5c3bR"
 const subaddress = "8AiHrLaxEACUgytKhaVVEN4JELJ8m9uc5DbXWxTvavKqFYPbMGmPE75N7RFUVHhgxABW7y7tqih6r8CVUWzcc42DBTMihBd"
 
 func TestDecodeEncodeAddressNormal(t *testing.T) {

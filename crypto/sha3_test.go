@@ -79,6 +79,14 @@ var shortKeccakTestVectors = []testVector{
 			"Keccak512": "9A7688E31AAF40C15575FC58C6B39267AAD3722E696E518A9945CF7F7C0FEA84CB3CB2E9F0384A6B5DC671ADE7FB4D2B27011173F3EEEAF17CB451CF26542031",
 		},
 	},
+	{
+		desc:   "short-73B",
+		input:  decodeHex("13e64937643f64325c57b91ca5ed7fea2d9d472dff634d7eed160331db7ad2e7ce163b99031fe4ce3a0254f11c696f7064f8e7af5d3b4493228dd16c33b45d83ebd64c6f170d0a4ca6"),
+		repeat: 1,
+		want: map[string]string{
+			"Keccak256": "47BEF1CC7816069C079E5EA5E3677E8DDC4149937FAFA6469FEF86259EC1F4F7",
+		},
+	},
 }
 
 // longTestVectors stores longer testVectors (currently only one).

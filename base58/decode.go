@@ -19,7 +19,7 @@ func decodeBlock(dst, src []byte) (int, error) {
 			if src[i] == 0x00 {
 				continue
 			}
-			return 0, fmt.Errorf("invalid character '%s' found", src[i])
+			return 0, fmt.Errorf("invalid character '%v' found", src[i])
 		}
 		idx := big.NewInt(int64(tmp))
 		tmp1 := big.NewInt(0)

@@ -3,7 +3,6 @@ package monero
 import (
 	"bytes"
 	"errors"
-
 	"github.com/snipa22/monero-support/base58"
 	"github.com/snipa22/monero-support/crypto"
 )
@@ -65,6 +64,7 @@ var (
 	InvalidAddressTag    = errors.New("address has invalid prefix")
 	InvalidAddress       = errors.New("address contains invalid keys")
 	InvalidTagSelected   = errors.New("tag not available")
+	InvalidPaymentID     = errors.New("invalid payment id for integrated address")
 )
 
 // DecodeAddress decodes an address from the standard textual representation.
@@ -80,25 +80,39 @@ func DecodeAddress(s string) (*Address, error) {
 // Address contains public keys for the spend and view aspects of a Monero account.
 type Address struct {
 	spend, view [32]byte
+	paymentID   [8]byte
 }
 
 func (a *Address) MarshalBinary() (data []byte, err error) {
 	// make this long enough to hold a full hash on the end
-	data = make([]byte, 104)
+	data = make([]byte, 112)
 	// copy tag
 	n := 1
 	data[0] = Tag
 
 	//copy keys
 	copy(data[n:], a.spend[:])
-	copy(data[n+32:], a.view[:])
+	if Tag == Tags[Integrated] {
+		copy(data[n+32:n+64], a.view[:])
+		copy(data[n+64:], a.paymentID[:])
+	} else {
+		copy(data[n+32:], a.view[:])
+	}
 
 	// checksum
 	hash := crypto.NewHash()
-	hash.Write(data[:n+64])
-	// hash straight to the slice
-	hash.Sum(data[:n+64])
-	return data[:n+68], nil
+	if Tag == Tags[Integrated] {
+		hash.Write(data[:n+72])
+		// hash straight to the slice
+		hash.Sum(data[:n+72])
+		return data[:n+76], nil
+	} else {
+		hash.Write(data[:n+64])
+		// hash straight to the slice
+		hash.Sum(data[:n+64])
+		return data[:n+68], nil
+	}
+
 }
 
 func (a *Address) UnmarshalBinary(data []byte) error {
@@ -123,12 +137,17 @@ func (a *Address) UnmarshalBinary(data []byte) error {
 
 	data = data[1:]
 
-	if len(data) != 64 {
+	if len(data) == 64 {
+		copy(a.spend[:], data[0:32])
+		copy(a.view[:], data[32:64])
+	} else if len(data) == 72 {
+		copy(a.spend[:], data[0:32])
+		copy(a.view[:], data[32:64])
+		copy(a.paymentID[:], data[64:72])
+	} else {
 		return InvalidAddressLength
 	}
 
-	copy(a.spend[:], data[:32])
-	copy(a.view[:], data[32:])
 	// don't check the keys yet
 	return nil
 }
