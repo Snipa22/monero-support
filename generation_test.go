@@ -1,4 +1,4 @@
-package monero
+package monero-support
 
 import (
 	crand "crypto/rand"
