@@ -1,4 +1,4 @@
-package monero-support
+package monero
 
 import (
 	"bytes"
