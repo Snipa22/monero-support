@@ -64,7 +64,6 @@ var (
 	InvalidAddressTag    = errors.New("address has invalid prefix")
 	InvalidAddress       = errors.New("address contains invalid keys")
 	InvalidTagSelected   = errors.New("tag not available")
-	InvalidPaymentID     = errors.New("invalid payment id for integrated address")
 )
 
 // DecodeAddress decodes an address from the standard textual representation.
