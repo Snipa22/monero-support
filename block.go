@@ -1,4 +1,4 @@
-package monero
+package moneroCryptoNoteUtils
 
 import (
 	"encoding/binary"
@@ -276,19 +276,53 @@ func GetBlockHashingBlob(b Block) ([]byte, error) {
 	return blob, nil
 }
 
+func getTransactionPrefixSerialized(tp TransactionPrefix) []byte {
+	// Serialize a prefix
+	// varint - Version
+	// varint - unlocked_time
+	// Vector store of the vin
+	// Vector store of the vout
+	// Slap on that extra data.  Mmmmm.  Extra.  Data.  Nomnom.
+}
+
+func getTransactionPrefixHash(t Transaction) [32]byte {
+	// Given a Transaction t, extract the TransactionPrefix TP and serialize it.
+	// Given the resulting serialized data, cn_fast_hash (keccak-256) it.
+}
+
+func getTransactionHash(t Transaction) [32]byte {
+	// Original source: cryptonote_format_utils.cpp:617-ish
+	// With hashes be three, may thee get the result thoust desire.
+	var hs [3][32]byte
+
+	// Thou must take tine prefix, and hash it!
+	// Original : get_transaction_prefix_hash(t (Transaction), hashes[0] (crypto::hash))
+}
+
+func getBlockMerkleTreeHash(b Block) [32]byte {
+	// Get the transaction hash?  Wtfh.
+	// Original: get_transaction_hash(b.miner_tx (Transaction), h (crypto::hash), bl_sz (size_t (uint64 for us!)));
+
+	// Shift the hashes into a new slice, first one is the txn hash, then add all other hashes to the end.
+
+	// Get the tree hash, this is the return.  Need to abstract some of this to a support library...
+}
+
 func treeHash(b Block) [32]byte {
-	h := crypto.NewHash() // Hash Object
+	hash := [32]byte{}
 	if len(b.TxnHashes) == 1 {
 		return b.TxnHashes[0]
 	} else if len(b.TxnHashes) == 2 {
+		h := crypto.NewHash() // Hash Object
 		h.Write(b.TxnHashes[0][:])
 		h.Write(b.TxnHashes[1][:])
+		var tempHash []byte
+		h.Sum(tempHash)
+		copy(hash[:], tempHash[:])
 	} else {
-
+		// Borrowed from the tree-hash.c inmplenm
+		var i, j uint64
+		var cnt uint64 = uint64(len(b.TxnHashes) - 1)
 	}
-	hash := [32]byte{}
-	var tempHash []byte
-	h.Sum(tempHash)
-	copy(hash[:], tempHash[:])
 	return hash
 }

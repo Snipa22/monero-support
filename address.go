@@ -1,4 +1,4 @@
-package monero
+package moneroCryptoNoteUtils
 
 import (
 	"bytes"
