@@ -16,7 +16,6 @@ package crypto
 
 import (
 	"encoding/binary"
-	"github.com/snipa22/monero-support/crypto"
 	"hash"
 )
 
@@ -209,13 +208,3 @@ func (d *digest) Sum(in []byte) []byte {
 
 // NewHash returns the Keccak256 hash.Hash used internaly by Monero.
 func NewHash() hash.Hash { return &digest{outputSize: 256 / 8, capacity: 2 * 256 / 8} }
-
-func KeccakDirectHash(raw []byte) [32]byte {
-	h := crypto.NewHash() // Hash Object
-	h.Write(raw)
-	intHash := [32]byte{}
-	var tempHash []byte
-	h.Sum(tempHash)
-	copy(intHash[:], tempHash[:])
-	return intHash
-}
