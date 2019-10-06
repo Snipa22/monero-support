@@ -4,80 +4,8 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"github.com/snipa22/monero-support/crypto"
+	"github.com/snipa22/moneroCryptoNoteUtils/crypto"
 )
-
-// Transaction Inputs
-type TransactionInGenesis struct {
-	Height uint64
-	Used   bool
-}
-
-type TransactionInToScript struct {
-	PreviousHash   [32]byte
-	PreviousOutput uint64
-	SignatureSet   []uint8
-	Used           bool
-}
-
-type TransactionInToScriptHash struct {
-	PreviousHash   [32]byte
-	PreviousOutput uint64
-	Script         TransactionOutToScript
-	SignatureSet   []uint8
-	Used           bool
-}
-
-type TransactionInToKey struct {
-	Amount     uint64    // Amount of coin transferred
-	KeyOffsets []uint64  // Key offsets are numeric ID's
-	KeyImage   [32]uint8 // Key Image is a hex
-	Used       bool
-}
-
-type TransactionIn struct {
-	Genesis    TransactionInGenesis
-	Script     TransactionInToScript
-	ScriptHash TransactionInToScriptHash
-	Key        TransactionInToKey
-}
-
-// Transaction Outputs
-type TransactionOutToScript struct {
-	PublicKey [32]byte
-	Script    []uint8
-	Used      bool
-}
-
-type TransactionOutToScriptHash struct {
-	Hash [32]byte
-	Used bool
-}
-
-type TransactionOutToKey struct {
-	PublicKey [32]byte
-	Used      bool
-}
-
-type TransactionOut struct {
-	Amount     uint64
-	Script     TransactionOutToScript
-	ScriptHash TransactionOutToScriptHash
-	Key        TransactionOutToKey
-}
-
-type TransactionPrefix struct {
-	Version         uint64
-	UnlockTime      uint64
-	TransactionsIn  []TransactionIn
-	TransactionsOut []TransactionOut
-	Extra           []uint8
-}
-
-type Transaction struct {
-	TransactionPrefix
-	Signatures [][32]byte
-}
 
 type BlockHeader struct {
 	MajorVersion uint8
@@ -276,18 +204,11 @@ func GetBlockHashingBlob(b Block) ([]byte, error) {
 	return blob, nil
 }
 
-func getTransactionPrefixSerialized(tp TransactionPrefix) []byte {
-	// Serialize a prefix
-	// varint - Version
-	// varint - unlocked_time
-	// Vector store of the vin
-	// Vector store of the vout
-	// Slap on that extra data.  Mmmmm.  Extra.  Data.  Nomnom.
-}
-
 func getTransactionPrefixHash(t Transaction) [32]byte {
 	// Given a Transaction t, extract the TransactionPrefix TP and serialize it.
 	// Given the resulting serialized data, cn_fast_hash (keccak-256) it.
+	hash := [32]byte{}
+	return hash
 }
 
 func getTransactionHash(t Transaction) [32]byte {
@@ -297,6 +218,8 @@ func getTransactionHash(t Transaction) [32]byte {
 
 	// Thou must take tine prefix, and hash it!
 	// Original : get_transaction_prefix_hash(t (Transaction), hashes[0] (crypto::hash))
+	hash := [32]byte{}
+	return hash
 }
 
 func getBlockMerkleTreeHash(b Block) [32]byte {
@@ -306,6 +229,8 @@ func getBlockMerkleTreeHash(b Block) [32]byte {
 	// Shift the hashes into a new slice, first one is the txn hash, then add all other hashes to the end.
 
 	// Get the tree hash, this is the return.  Need to abstract some of this to a support library...
+	hash := [32]byte{}
+	return hash
 }
 
 func treeHash(b Block) [32]byte {

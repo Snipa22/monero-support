@@ -3,8 +3,8 @@ package moneroCryptoNoteUtils
 import (
 	"bytes"
 	"errors"
-	"github.com/snipa22/monero-support/base58"
-	"github.com/snipa22/monero-support/crypto"
+	"github.com/snipa22/moneroCryptoNoteUtils/base58"
+	"github.com/snipa22/moneroCryptoNoteUtils/crypto"
 )
 
 const ChecksumSize = 4
