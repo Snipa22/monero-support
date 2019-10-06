@@ -208,3 +208,16 @@ func (d *digest) Sum(in []byte) []byte {
 
 // NewHash returns the Keccak256 hash.Hash used internaly by Monero.
 func NewHash() hash.Hash { return &digest{outputSize: 256 / 8, capacity: 2 * 256 / 8} }
+
+func KeccakOneShot(i []byte) [32]byte {
+	h := NewHash()
+	h.Write(i)
+	var t []byte
+	var r [32]byte
+	t = h.Sum(t)
+	if len(t) < 32 {
+		return r
+	}
+	copy(r[:], t[0:32])
+	return r
+}
