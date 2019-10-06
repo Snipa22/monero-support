@@ -1,4 +1,4 @@
-package moneroCryptoNoteUtils
+package monerocnutils
 
 import (
 	"testing"

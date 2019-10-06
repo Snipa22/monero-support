@@ -1,9 +1,17 @@
-package moneroCryptoNoteUtils
+package monerocnutils
+
+import "monerocnutils/serialization"
 
 // Transaction Inputs
 type TransactionInGenesis struct {
 	Height uint64
 	Used   bool
+}
+
+func (tig TransactionInGenesis) serialize() []byte {
+	var s []byte
+	s = serialization.WriteUint(s, tig.Height)
+	return s
 }
 
 type TransactionInToScript struct {
@@ -35,6 +43,14 @@ type TransactionIn struct {
 	Key        TransactionInToKey
 }
 
+func (ti TransactionIn) serialize() []byte {
+	var s []byte
+	if ti.Genesis.Used {
+		s = append(s, ti.Genesis.serialize()...)
+	}
+	return s
+}
+
 // Transaction Outputs
 type TransactionOutToScript struct {
 	PublicKey [32]byte
@@ -52,11 +68,26 @@ type TransactionOutToKey struct {
 	Used      bool
 }
 
+func (totk TransactionOutToKey) serialize() []byte {
+	var s []byte
+	s = append(s, totk.PublicKey[:]...)
+	return s
+}
+
 type TransactionOut struct {
 	Amount     uint64
 	Script     TransactionOutToScript
 	ScriptHash TransactionOutToScriptHash
 	Key        TransactionOutToKey
+}
+
+func (to TransactionOut) serialize() []byte {
+	var s []byte
+	s = serialization.WriteUint(s, to.Amount)
+	if to.Key.Used {
+		s = append(s, to.Key.serialize()...)
+	}
+	return s
 }
 
 type TransactionPrefix struct {
@@ -65,6 +96,26 @@ type TransactionPrefix struct {
 	TransactionsIn  []TransactionIn
 	TransactionsOut []TransactionOut
 	Extra           []uint8
+}
+
+func (tp TransactionPrefix) serialize() []byte {
+	// varint - Version
+	// varint - unlocked_time
+	// Vector store of the vin
+	// Vector store of the vout
+	// Slap on that extra data.  Mmmmm.  Extra.  Data.  Nomnom.
+	var s []byte
+	s = serialization.WriteUint(s, tp.Version)
+	s = serialization.WriteUint(s, tp.UnlockTime)
+	s = serialization.WriteUint(s, uint64(len(tp.TransactionsIn)))
+	for _, e := range tp.TransactionsIn {
+		s = append(s, e.serialize()...)
+	}
+	s = serialization.WriteUint(s, uint64(len(tp.TransactionsOut)))
+	for _, e := range tp.TransactionsOut {
+		s = append(s, e.serialize()...)
+	}
+	return s
 }
 
 type Transaction struct {
