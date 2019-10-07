@@ -55,8 +55,13 @@ func TestParseBlockFromTemplateBlob(t *testing.T) {
 func TestGetBlockHashingBlob(t *testing.T) {
 	b, _ := ParseBlockFromTemplateBlob(onlyMinerBlockTemplate)
 	blob, _ := GetBlockHashingBlob(b)
-	fmt.Printf("%x\n", blob)
 	if fmt.Sprintf("%x", blob) != onlyMinerBlockTemplateHashingBlob {
+		t.Fatal("Failed to properly convert blob back to hashing blob in comparison with the stored one")
+	}
+
+	b, _ = ParseBlockFromTemplateBlob(minerTXBlockTemplate2)
+	blob, _ = GetBlockHashingBlob(b)
+	if fmt.Sprintf("%x", blob) != minerTXBlockTemplate2HashingBlob {
 		t.Fatal("Failed to properly convert blob back to hashing blob in comparison with the stored one")
 	}
 }
