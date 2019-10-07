@@ -7,8 +7,7 @@ type TransactionInGenesis struct {
 }
 
 func (tig TransactionInGenesis) Serialize() []byte {
-	var s []byte
-	s = WriteUint(s, 0xff)
+	var s []byte = []byte{0xff}
 	s = WriteUint(s, tig.Height)
 	return s
 }
@@ -68,8 +67,7 @@ type TransactionOutToKey struct {
 }
 
 func (totk TransactionOutToKey) Serialize() []byte {
-	var s []byte
-	s = WriteUint(s, 0x02)
+	var s []byte = []byte{0x02}
 	s = append(s, totk.PublicKey[:]...)
 	return s
 }
