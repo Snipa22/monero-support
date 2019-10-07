@@ -42,7 +42,8 @@ func TreeHash(hs [][32]byte) [32]byte {
 			}
 			cnt >>= 1
 			for i, j = 0, 0; j < cnt; i, j = i+2, j+1 {
-				ints[j] = KeccakOneShot(ints[i][:8])
+				intHash := append(ints[i][:], ints[i+1][:]...)
+				ints[j] = KeccakOneShot(intHash)
 			}
 		}
 		hash = KeccakOneShot(append(ints[0][:], ints[1][:]...))
