@@ -22,8 +22,8 @@ func ReadUint(b []byte) (uint64, []byte, error) {
 }
 
 func WriteUint(b []byte, v uint64) []byte {
-	var tempBlob []byte
-	bytesWritten := binary.PutUvarint(tempBlob, uint64(v))
+	var tempBlob []byte = make([]byte, 32)
+	bytesWritten := binary.PutUvarint(tempBlob, v)
 	b = append(b, tempBlob[0:bytesWritten]...)
 	return b
 }
