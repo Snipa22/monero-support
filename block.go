@@ -149,6 +149,7 @@ func GetBlockHashingBlob(b serialization.Block) ([]byte, error) {
 	// Source: cryptonote_format_utils.cpp
 	// Original: get_block_hashing_blob(const block& b, blobdata& blob) - Line: 678-ish
 	var sbh []byte = b.BlockHeader.Serialize()
+	return sbh, nil
 }
 
 // Supporting hash systems
