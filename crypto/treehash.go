@@ -14,7 +14,10 @@ func TreeHash(hs [][32]byte) [32]byte {
 	} else {
 		// Borrowed from the tree-hash.c inmplenm
 		var i, j uint64
-		var cnt uint64 = uint64(len(b.TxnHashes) - 1)
+		var cnt uint64 = uint64(len(hs) - 1)
+		i = j
+		j = i
+		i = cnt
 	}
 	return hash
 }
