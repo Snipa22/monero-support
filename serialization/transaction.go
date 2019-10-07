@@ -122,3 +122,10 @@ type Transaction struct {
 	TransactionPrefix
 	Signatures [][32]byte
 }
+
+func (t Transaction) Serialize() []byte {
+	// Cheating, as our ringCT sing type is 0
+	var s []byte = t.TransactionPrefix.Serialize()
+	s = append(s, 0)
+	return s
+}
