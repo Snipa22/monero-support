@@ -36,3 +36,19 @@ type Block struct {
 	MinerTxn  Transaction
 	TxnHashes [][32]byte
 }
+
+func (b Block) Serialize() []byte {
+	var s []byte = b.BlockHeader.Serialize()
+	s = append(s, b.MinerTxn.Serialize()...)
+	s = append(s, byte(len(b.TxnHashes)))
+
+	for _, e := range b.TxnHashes {
+		s = append(s, e[:]...)
+	}
+
+	return s
+}
+
+func (b Block) GetBlob() []byte {
+	return b.Serialize()
+}
