@@ -65,3 +65,15 @@ func TestGetBlockHashingBlob(t *testing.T) {
 		t.Fatal("Failed to properly convert blob back to hashing blob in comparison with the stored one")
 	}
 }
+
+func TestBlockBlobSerialization(t *testing.T) {
+	b, _ := ParseBlockFromTemplateBlob(onlyMinerBlockTemplate)
+	if fmt.Sprintf("%x", b.GetBlob()) != onlyMinerBlockTemplate {
+		t.Fatal("Failed to properly convert block back into an identical original blob")
+	}
+
+	b, _ = ParseBlockFromTemplateBlob(minerTXBlockTemplate2)
+	if fmt.Sprintf("%x", b.GetBlob()) != minerTXBlockTemplate2 {
+		t.Fatal("Failed to properly convert block back into an identical original blob")
+	}
+}
