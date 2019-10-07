@@ -3,50 +3,17 @@ package monerocnutils
 import (
 	"encoding/binary"
 	"encoding/hex"
-	"monerocnutils/crypto"
-	"monerocnutils/serialization"
+	"github.com/snipa22/monerocnutils/crypto"
+	"github.com/snipa22/monerocnutils/serialization"
 )
-
-type BlockHeader struct {
-	MajorVersion uint8
-	MinorVersion uint8
-	Timestamp    uint64
-	PreviousID   [32]byte
-	Nonce        uint32
-}
-
-func (bh BlockHeader) serialize() []byte {
-	var s []byte
-
-	s = serialization.WriteUint(s, uint64(bh.MajorVersion))
-	s = serialization.WriteUint(s, uint64(bh.MinorVersion))
-	s = serialization.WriteUint(s, bh.Timestamp)
-
-	// Previous Block ID
-	var tempBlob []byte = make([]byte, 32)
-	copy(tempBlob[:], bh.PreviousID[:])
-	s = append(s, tempBlob...)
-
-	// Nonce
-	binary.BigEndian.PutUint32(tempBlob, bh.Nonce)
-	s = append(s, tempBlob[0:4]...)
-
-	return s
-}
-
-type Block struct {
-	BlockHeader
-	MinerTxn  Transaction
-	TxnHashes [][32]byte
-}
 
 // Things to be implemented
 // 1. convert_blob -> Converts a block template blob that's been modified into a hashable object
 // 1.1 parse_and_validate_block_from_blob -> Created a Block struct from a blob of data provided by the Get Block Template RPC call, that is then modified to suit usages
 // 1.2 get_block_hashing_blob -> Converts the blob into a block hashing blob
 
-func ParseBlockFromTemplateBlob(blob string) (Block, error) {
-	var b Block
+func ParseBlockFromTemplateBlob(blob string) (serialization.Block, error) {
+	var b serialization.Block
 	blobInBytes, err := hex.DecodeString(blob)
 	if err != nil {
 		return b, err
@@ -81,7 +48,7 @@ func ParseBlockFromTemplateBlob(blob string) (Block, error) {
 	blobInBytes = blobInBytes[4:]
 
 	// Start Transaction Processing (Miner Transaction)
-	var t Transaction
+	var t serialization.Transaction
 
 	// Get Version, uint64
 	val, blobInBytes, err = serialization.ReadUint(blobInBytes)
@@ -107,8 +74,8 @@ func ParseBlockFromTemplateBlob(blob string) (Block, error) {
 	blobInBytes = blobInBytes[1:]
 
 	// Load the resulting blob data into the correct portion of Transaction/TransactionsIn
-	var tig TransactionInGenesis
-	var ti TransactionIn
+	var tig serialization.TransactionInGenesis
+	var ti serialization.TransactionIn
 
 	// Get the genesis height
 	val, blobInBytes, err = serialization.ReadUint(blobInBytes)
@@ -125,7 +92,7 @@ func ParseBlockFromTemplateBlob(blob string) (Block, error) {
 	blobInBytes = blobInBytes[1:]
 
 	// Load the resulting blob data into the correct portion of Transaction/TransactionsOut
-	var to TransactionOut
+	var to serialization.TransactionOut
 
 	val, blobInBytes, err = serialization.ReadUint(blobInBytes)
 	if err != nil {
@@ -137,7 +104,7 @@ func ParseBlockFromTemplateBlob(blob string) (Block, error) {
 	blobInBytes = blobInBytes[1:]
 
 	// Write a new TransactionOutToKey
-	var totk TransactionOutToKey
+	var totk serialization.TransactionOutToKey
 	bytesCopied = copy(totk.PublicKey[:], blobInBytes[0:32])
 	blobInBytes = blobInBytes[bytesCopied:]
 	totk.Used = true
@@ -178,22 +145,22 @@ func ParseBlockFromTemplateBlob(blob string) (Block, error) {
 	return b, nil
 }
 
-func GetBlockHashingBlob(b Block) ([]byte, error) {
+func GetBlockHashingBlob(b serialization.Block) ([]byte, error) {
 	// Source: cryptonote_format_utils.cpp
 	// Original: get_block_hashing_blob(const block& b, blobdata& blob) - Line: 678-ish
-	var sbh []byte = b.BlockHeader.serialize()
+	var sbh []byte = b.BlockHeader.Serialize()
 }
 
 // Supporting hash systems
 
-func getTransactionPrefixHash(t Transaction) [32]byte {
+func getTransactionPrefixHash(t serialization.Transaction) [32]byte {
 	// Given a Transaction t, extract the TransactionPrefix TP and serialize it.
 	// Given the resulting serialized data, cn_fast_hash (keccak-256) it.
-	hash := crypto.KeccakOneShot(t.TransactionPrefix.serialize())
+	hash := crypto.KeccakOneShot(t.TransactionPrefix.Serialize())
 	return hash
 }
 
-func getTransactionHash(t Transaction) [32]byte {
+func getTransactionHash(t serialization.Transaction) [32]byte {
 	// Original source: cryptonote_format_utils.cpp:617-ish
 	// With hashes be three, may thee get the result thoust desire.
 	var hs [3][32]byte
@@ -217,7 +184,7 @@ func getTransactionHash(t Transaction) [32]byte {
 	return h
 }
 
-func getBlockMerkleTreeHash(b Block) [32]byte {
+func getBlockMerkleTreeHash(b serialization.Block) [32]byte {
 	// Original: get_tx_tree_hash(const block& b) - cryptonote_format_utils.cpp:875-ish
 
 	// Get the transaction hash.

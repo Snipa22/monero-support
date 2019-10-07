@@ -3,8 +3,8 @@ package monerocnutils
 import (
 	"bytes"
 	"errors"
-	"monerocnutils/base58"
-	"monerocnutils/crypto"
+	"github.com/snipa22/monerocnutils/base58"
+	"github.com/snipa22/monerocnutils/crypto"
 )
 
 const ChecksumSize = 4

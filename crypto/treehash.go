@@ -1,18 +1,13 @@
 package crypto
 
-import (
-	cnutil "github.com/snipa22/monerocnutils"
-	"github.com/snipa22/monerocnutils/crypto"
-)
-
-func TreeHash(b cnutil.Block) [32]byte {
+func TreeHash(hs [][32]byte) [32]byte {
 	hash := [32]byte{}
-	if len(b.TxnHashes) == 1 {
-		return b.TxnHashes[0]
-	} else if len(b.TxnHashes) == 2 {
-		h := crypto.NewHash() // Hash Object
-		h.Write(b.TxnHashes[0][:])
-		h.Write(b.TxnHashes[1][:])
+	if len(hs) == 1 {
+		return hs[0]
+	} else if len(hs) == 2 {
+		h := NewHash() // Hash Object
+		h.Write(hs[0][:])
+		h.Write(hs[1][:])
 		var tempHash []byte
 		h.Sum(tempHash)
 		copy(hash[:], tempHash[:])
