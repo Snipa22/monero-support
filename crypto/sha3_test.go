@@ -242,3 +242,12 @@ func benchmarkBulkHash(b *testing.B, h hash.Hash) {
 
 // benchmarkBulkKeccakX test the speed to hash a 16 KiB buffer by calling benchmarkBulkHash.
 func BenchmarkBulkKeccak256(b *testing.B) { benchmarkBulkHash(b, NewHash()) }
+
+func TestKeccakOneShot(t *testing.T) {
+	testData := []byte("eATNfgS?hHTYJ#9mG9+!tqZcJgw+y$uG")
+	result := KeccakOneShot(testData)
+	if fmt.Sprintf("%x", result) != "4c30f92e3389c4438f49ceb7bf065c0b5a59644bebecbfd9f0886f818b4e88da" {
+		fmt.Printf("%x", result)
+		t.Fatal("KeccakOneShot not working")
+	}
+}
